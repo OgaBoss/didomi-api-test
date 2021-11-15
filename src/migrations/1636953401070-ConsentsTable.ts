@@ -36,11 +36,13 @@ export class ConsentsTable1636953401070 implements MigrationInterface {
           {
             name: 'created_at',
             type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
             isNullable: false,
           },
           {
             name: 'updated_at',
             type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
             isNullable: false,
           },
         ],

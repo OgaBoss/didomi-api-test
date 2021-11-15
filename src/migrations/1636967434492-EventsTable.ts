@@ -38,6 +38,7 @@ export class EventsTable1636967434492 implements MigrationInterface {
           {
             name: 'created_at',
             type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
             isNullable: false,
           },
         ],

@@ -3,10 +3,10 @@ import {
   CreateDateColumn,
   Entity,
   OneToOne,
+  JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/models/User';
-import { JoinColumn } from 'typeorm/browser';
 import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
 
 @Entity({ name: 'consents' })
@@ -14,7 +14,7 @@ export class Consent {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
+  @Column('text', { array: true })
   data: ConsentsDataInterface[];
 
   @Column()

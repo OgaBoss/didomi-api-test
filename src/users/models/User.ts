@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;

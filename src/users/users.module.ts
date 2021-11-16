@@ -11,11 +11,9 @@ import { Consent } from '../consents/models/Consent';
 import { GetAllUsersHandler } from './queries/GetAllUsersHandler';
 import { GetUserHandler } from './queries/GetUserHandler';
 import { DeleteUserHandler } from './commands/DeleteUserHandler';
-import { UpdateUserConsentsHandler } from './events/UpdateUserConsentsHandler';
 
 export const CommandHandlers = [CreateUserHandler, DeleteUserHandler];
 export const QueryHandlers = [GetAllUsersHandler, GetUserHandler];
-export const EventHandlers = [UpdateUserConsentsHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Consent]), CqrsModule],
@@ -25,9 +23,8 @@ export const EventHandlers = [UpdateUserConsentsHandler];
     EmailExistsRule,
     ...CommandHandlers,
     ...QueryHandlers,
-    ...EventHandlers,
     Repository,
   ],
-  exports: [UpdateUserConsentsHandler],
+  exports: [],
 })
 export class UsersModule {}

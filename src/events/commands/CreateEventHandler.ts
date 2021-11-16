@@ -119,19 +119,19 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
         : createEventDto.consents;
 
     if (userConsents && smsNotification !== null) {
-      consents.forEach((item) => {
-        if (item.id === EventTypes.SMS_NOTIFICATIONS) {
-          item.enabled = smsNotification;
-        }
-      });
+      this.setNotificationValues(
+        consents,
+        smsNotification,
+        EventTypes.SMS_NOTIFICATIONS,
+      );
     }
 
     if (userConsents && emailNotification !== null) {
-      consents.forEach((item) => {
-        if (item.id === EventTypes.EMAIL_NOTIFICATIONS) {
-          item.enabled = emailNotification;
-        }
-      });
+      this.setNotificationValues(
+        consents,
+        emailNotification,
+        EventTypes.EMAIL_NOTIFICATIONS,
+      );
     }
 
     if (userConsents) {
@@ -147,6 +147,22 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
     consent.user = user;
 
     return await this.consentsRepository.save(consent);
+  }
+
+  private setNotificationValues(
+    consents: ConsentsDataInterface[],
+    smsNotification: boolean,
+    type: EventTypes,
+  ) {
+    const index = consents.findIndex((item) => item.id === type);
+    if (index >= 0) {
+      consents[index].enabled = smsNotification;
+    } else {
+      consents.push({
+        id: EventTypes.SMS_NOTIFICATIONS,
+        enabled: smsNotification,
+      });
+    }
   }
 
   private getNotificationCurrentState(createEventDto: CreateEventDto) {

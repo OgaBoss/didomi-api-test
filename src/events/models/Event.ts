@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/models/User';
-import { JoinColumn } from 'typeorm/browser';
+import { JoinColumn } from 'typeorm';
 import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
 
 @Entity({ name: 'events' })
@@ -17,13 +17,13 @@ export class Event {
   @Column()
   version: number;
 
-  @Column({ type: 'jsonb' })
+  @Column('jsonb')
   data: ConsentsDataInterface[];
 
   @CreateDateColumn()
   created_at: Date;
 
   @ManyToOne(() => User)
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }

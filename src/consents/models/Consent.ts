@@ -14,7 +14,7 @@ export class Consent {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column('text', { array: true })
+  @Column('jsonb')
   data: ConsentsDataInterface[];
 
   @Column()

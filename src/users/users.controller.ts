@@ -15,6 +15,7 @@ import { CreateUserDto } from './dtos/CreateUserDto';
 import { ApiTags } from '@nestjs/swagger';
 import { GetResponseInterceptor } from './interceptors/GetResponseInterceptor';
 import { BadRequestExceptionFilter } from './filters/BadRequestExceptionFilter';
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -34,6 +35,7 @@ export class UsersController {
 
   @Post()
   @UseFilters(new BadRequestExceptionFilter())
+  @UseInterceptors(new GetResponseInterceptor())
   store(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }

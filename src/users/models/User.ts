@@ -4,7 +4,6 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,9 +11,11 @@ import {
 import { IsEmail } from 'class-validator';
 import { Consent } from '../../consents/models/Consent';
 import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { UpdateUserConsentsEvents } from '../events/UpdateUserConsentsEvents';
 
 @Entity({ name: 'users' })
-export class User {
+export class User extends AggregateRoot {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -33,5 +34,13 @@ export class User {
   deleted_at?: Date;
 
   @OneToOne(() => Consent, (consent) => consent.user)
-  consent: ConsentsDataInterface[];
+  consent: Consent;
+
+  setConsents(
+    user_id: string,
+    version: number,
+    consents: ConsentsDataInterface[],
+  ) {
+    this.apply(new UpdateUserConsentsEvents(user_id, version, consents));
+  }
 }

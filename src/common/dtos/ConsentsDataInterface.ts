@@ -1,9 +1,10 @@
-export enum EventTypes {
-  SMS_NOTIFICATIONS = 'sms_notifications',
-  EMAIL_NOTIFICATIONS = 'email_notifications',
-}
+import { EventTypes } from '../../events/dtos/EventTypes';
+import { IsBoolean, IsString } from 'class-validator';
 
-export interface ConsentsDataInterface {
+export class ConsentsDataInterface {
+  @IsString()
   id: EventTypes;
+
+  @IsBoolean()
   enabled: boolean;
 }

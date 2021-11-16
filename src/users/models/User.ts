@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -31,6 +32,6 @@ export class User {
   @DeleteDateColumn()
   deleted_at?: Date;
 
-  @OneToOne(() => Consent, (consent) => consent.data)
+  @OneToOne(() => Consent, (consent) => consent.user)
   consent: ConsentsDataInterface[];
 }

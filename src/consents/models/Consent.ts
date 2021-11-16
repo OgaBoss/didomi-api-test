@@ -27,6 +27,6 @@ export class Consent {
   updated_at: Date;
 
   @OneToOne(() => User)
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }

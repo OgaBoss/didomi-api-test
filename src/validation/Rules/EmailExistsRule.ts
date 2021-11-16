@@ -17,16 +17,12 @@ export class EmailExistsRule implements ValidatorConstraintInterface {
 
   async validate(value: string) {
     try {
-      console.log(value);
-
       const response = await this.userRepository
         .createQueryBuilder('users')
         .where('users.email = :email', { email: value })
         .getOne();
-      // console.log(response);
       return !response;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }

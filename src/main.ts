@@ -16,6 +16,7 @@ async function bootstrap() {
       },
     }),
   );
+
   const options = new DocumentBuilder()
     .setTitle('Didomi API Application')
     .setDescription('Didomi API Application')

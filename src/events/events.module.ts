@@ -9,13 +9,20 @@ import { Repository } from 'typeorm';
 import { Event } from './models/Event';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
+import { EventSourcedCurrentState } from './helpers/EventSourcedCurrentState';
 
 export const CommandHandlers = [CreateEventHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Event]), CqrsModule, UsersModule],
   controllers: [EventsController],
-  providers: [EventsService, ...CommandHandlers, Repository, UsersService],
+  providers: [
+    EventsService,
+    ...CommandHandlers,
+    Repository,
+    UsersService,
+    EventSourcedCurrentState,
+  ],
   exports: [],
 })
 export class EventsModule {}

@@ -5,6 +5,7 @@ import { Connection, QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/models/User';
 import { CreateEventDto } from '../dtos/CreateEventDto';
+import { EventSourcedCurrentState } from '../helpers/EventSourcedCurrentState';
 
 @CommandHandler(CreateEventCommand)
 export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
@@ -14,6 +15,7 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly connection: Connection,
+    private readonly service: EventSourcedCurrentState,
   ) {}
 
   async execute(command: CreateEventCommand) {
@@ -61,6 +63,7 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
       return {
         id: user.id,
         email: user.email,
+        consents: await this.service.getEventsCurrentStates(user.id),
       };
     } catch (e) {
       await queryRunner.rollbackTransaction();

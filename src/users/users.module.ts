@@ -10,12 +10,14 @@ import { Repository } from 'typeorm';
 import { GetAllUsersHandler } from './queries/GetAllUsersHandler';
 import { GetUserHandler } from './queries/GetUserHandler';
 import { DeleteUserHandler } from './commands/DeleteUserHandler';
+import { EventSourcedCurrentState } from '../events/helpers/EventSourcedCurrentState';
+import { Event } from '../events/models/Event';
 
 export const CommandHandlers = [CreateUserHandler, DeleteUserHandler];
 export const QueryHandlers = [GetAllUsersHandler, GetUserHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), CqrsModule],
+  imports: [TypeOrmModule.forFeature([User, Event]), CqrsModule],
   controllers: [UsersController],
   providers: [
     UsersService,
@@ -23,6 +25,7 @@ export const QueryHandlers = [GetAllUsersHandler, GetUserHandler];
     ...CommandHandlers,
     ...QueryHandlers,
     Repository,
+    EventSourcedCurrentState,
   ],
   exports: [],
 })

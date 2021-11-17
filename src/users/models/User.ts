@@ -8,10 +8,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
-import { AggregateRoot } from '@nestjs/cqrs';
+import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
 
 @Entity({ name: 'users' })
-export class User extends AggregateRoot {
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -28,4 +28,6 @@ export class User extends AggregateRoot {
 
   @DeleteDateColumn()
   deleted_at?: Date;
+
+  consents: ConsentsDataInterface[];
 }

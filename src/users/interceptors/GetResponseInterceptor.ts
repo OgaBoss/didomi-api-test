@@ -17,16 +17,12 @@ export class GetResponseInterceptor implements NestInterceptor {
           return {
             id: data.id,
             email: data.email,
-            consents:
-              data.consent && data.consent.data ? data.consent.data : [],
           };
         }
         return data.map((item) => {
           return {
             id: item.id,
             email: item.email,
-            consents:
-              item.consent && item.consent.data ? item.consent.data : [],
           };
         });
       }),

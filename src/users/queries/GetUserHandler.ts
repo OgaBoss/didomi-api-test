@@ -15,9 +15,7 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
   async execute(query: GetUserQuery) {
     const { user_id } = query;
 
-    const user: User = await this.userRepository.findOne(user_id, {
-      relations: ['consent'],
-    });
+    const user: User = await this.userRepository.findOne(user_id);
 
     if (!user) {
       throw new NotFoundException(`User with id #${user_id} not found`);

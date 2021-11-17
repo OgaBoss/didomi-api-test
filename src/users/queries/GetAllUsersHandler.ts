@@ -15,7 +15,6 @@ export class GetAllUsersHandler implements IQueryHandler<GetAllUsersQuery> {
     const { paginationQueryDto } = query;
 
     return await this.userRepository.find({
-      relations: ['consent'],
       skip: paginationQueryDto.offset,
       take: paginationQueryDto.limit,
     });

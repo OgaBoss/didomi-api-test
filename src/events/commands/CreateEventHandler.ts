@@ -3,9 +3,6 @@ import { CreateEventCommand } from './CreateEventCommand';
 import { Event } from '../models/Event';
 import { Connection, QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Consent } from '../../consents/models/Consent';
-import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
-import { EventTypes } from '../dtos/EventTypes';
 import { User } from '../../users/models/User';
 import { CreateEventDto } from '../dtos/CreateEventDto';
 
@@ -14,8 +11,6 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
-    @InjectRepository(Consent)
-    private readonly consentsRepository: Repository<Consent>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly connection: Connection,
@@ -59,13 +54,6 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
         queryRunner,
       );
 
-      // Save current notification state to consents projections
-      const consents = await this.dispatchUserConsentsEvent(
-        user,
-        createEventDto,
-        eventVersion,
-      );
-
       // Commit Transaction
       await queryRunner.commitTransaction();
 
@@ -73,7 +61,6 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
       return {
         id: user.id,
         email: user.email,
-        consents: consents.data,
       };
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -95,90 +82,5 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
 
     // Events Saved
     await queryRunner.manager.save(events);
-  }
-
-  private async dispatchUserConsentsEvent(
-    user: User,
-    createEventDto: CreateEventDto,
-    eventVersion: number,
-  ) {
-    // Get Notification current state
-    const { smsNotification, emailNotification } =
-      this.getNotificationCurrentState(createEventDto);
-
-    const userConsents = await this.consentsRepository
-      .createQueryBuilder('consents')
-      .where('consents.user_id = :user_id', {
-        user_id: createEventDto.user.id,
-      })
-      .getOne();
-
-    const consents: ConsentsDataInterface[] =
-      userConsents && userConsents.data
-        ? userConsents.data
-        : createEventDto.consents;
-
-    if (userConsents && smsNotification !== null) {
-      this.setNotificationValues(
-        consents,
-        smsNotification,
-        EventTypes.SMS_NOTIFICATIONS,
-      );
-    }
-
-    if (userConsents && emailNotification !== null) {
-      this.setNotificationValues(
-        consents,
-        emailNotification,
-        EventTypes.EMAIL_NOTIFICATIONS,
-      );
-    }
-
-    if (userConsents) {
-      userConsents.version_id = eventVersion;
-      userConsents.data = consents;
-
-      return this.consentsRepository.save(userConsents);
-    }
-
-    const consent = new Consent();
-    consent.version_id = eventVersion;
-    consent.data = consents;
-    consent.user = user;
-
-    return await this.consentsRepository.save(consent);
-  }
-
-  private setNotificationValues(
-    consents: ConsentsDataInterface[],
-    smsNotification: boolean,
-    type: EventTypes,
-  ) {
-    const index = consents.findIndex((item) => item.id === type);
-    if (index >= 0) {
-      consents[index].enabled = smsNotification;
-    } else {
-      consents.push({
-        id: EventTypes.SMS_NOTIFICATIONS,
-        enabled: smsNotification,
-      });
-    }
-  }
-
-  private getNotificationCurrentState(createEventDto: CreateEventDto) {
-    let smsNotification: null | boolean = null;
-    let emailNotification: null | boolean = null;
-
-    // loop through payload.consents to get the current state of users consents
-    createEventDto.consents.forEach((item: ConsentsDataInterface) => {
-      if (item.id === EventTypes.EMAIL_NOTIFICATIONS) {
-        emailNotification = item.enabled;
-      }
-
-      if (item.id === EventTypes.SMS_NOTIFICATIONS) {
-        smsNotification = item.enabled;
-      }
-    });
-    return { smsNotification, emailNotification };
   }
 }

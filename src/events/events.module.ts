@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/models/User';
-import { Consent } from '../consents/models/Consent';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventsController } from './events.controller';
 import { CreateEventHandler } from './commands/CreateEventHandler';
@@ -14,11 +13,7 @@ import { UsersService } from '../users/users.service';
 export const CommandHandlers = [CreateEventHandler];
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Consent, Event]),
-    CqrsModule,
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([User, Event]), CqrsModule, UsersModule],
   controllers: [EventsController],
   providers: [EventsService, ...CommandHandlers, Repository, UsersService],
   exports: [],

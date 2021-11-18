@@ -20,7 +20,7 @@ $ npm run start
 
 ## DB
 ```
-Databse used is mysql
+Database used is mysql
 ```
 
 ## API Docs

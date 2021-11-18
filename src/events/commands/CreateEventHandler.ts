@@ -1,10 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateEventCommand } from './CreateEventCommand';
 import { Event } from '../models/Event';
-import { Connection, QueryRunner, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/models/User';
-import { CreateEventDto } from '../dtos/CreateEventDto';
 import { EventSourcedCurrentState } from '../../helpers/EventSourcedCurrentState';
 
 @CommandHandler(CreateEventCommand)
@@ -49,12 +48,13 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
       eventVersion++;
 
       // Save payload to events store
-      await CreateEventHandler.saveEventAction(
-        user,
-        createEventDto,
-        eventVersion,
-        queryRunner,
-      );
+      const events = new Event();
+      events.user = user;
+      events.data = createEventDto.consents;
+      events.version = eventVersion;
+
+      // Events Saved
+      await queryRunner.manager.save(events);
 
       // Commit Transaction
       await queryRunner.commitTransaction();
@@ -66,24 +66,10 @@ export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {
         consents: await this.service.getEventsCurrentStates(user.id),
       };
     } catch (e) {
+      console.log(e);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
     }
-  }
-
-  private static async saveEventAction(
-    user: User,
-    createEventDto: CreateEventDto,
-    eventVersion: number,
-    queryRunner: QueryRunner,
-  ) {
-    const events = new Event();
-    events.user = user;
-    events.data = createEventDto.consents;
-    events.version = eventVersion;
-
-    // Events Saved
-    await queryRunner.manager.save(events);
   }
 }

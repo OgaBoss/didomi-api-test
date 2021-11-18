@@ -23,6 +23,11 @@ $ npm run start
 Databse used is mysql
 ```
 
+##API Docs
+```
+When the app is running, check http://localhost:3000/api/ for API docs
+```
+
 ## Test
 
 ```bash

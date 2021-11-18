@@ -17,7 +17,7 @@ export class Event {
   @Column()
   version: number;
 
-  @Column('jsonb')
+  @Column('json')
   data: ConsentsDataInterface[];
 
   @CreateDateColumn()

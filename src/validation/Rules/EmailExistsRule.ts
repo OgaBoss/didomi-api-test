@@ -23,6 +23,7 @@ export class EmailExistsRule implements ValidatorConstraintInterface {
         .getOne();
       return !response;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }

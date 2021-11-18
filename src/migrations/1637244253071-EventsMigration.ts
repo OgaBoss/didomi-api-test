@@ -5,33 +5,32 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class ConsentsTable1636953401070 implements MigrationInterface {
+export class EventsMigration1637244253071 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'consents',
+        name: 'events',
         columns: [
           {
             name: 'id',
-            type: 'int4',
+            type: 'varchar',
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
           },
           {
             name: 'user_id',
-            type: 'uuid',
+            type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'version_id',
+            name: 'version',
             type: 'int',
             isNullable: false,
           },
           {
             name: 'data',
-            type: 'jsonb',
-            isNullable: true,
+            type: 'json',
+            isNullable: false,
           },
           {
             name: 'created_at',
@@ -39,26 +38,19 @@ export class ConsentsTable1636953401070 implements MigrationInterface {
             default: 'CURRENT_TIMESTAMP',
             isNullable: false,
           },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-            isNullable: false,
-          },
         ],
       }),
     );
-
     const foreignKey = new TableForeignKey({
       columnNames: ['user_id'],
       referencedColumnNames: ['id'],
       referencedTableName: 'users',
       onDelete: 'CASCADE',
     });
-    await queryRunner.createForeignKey('consents', foreignKey);
+    await queryRunner.createForeignKey('events', foreignKey);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE consents`);
+    await queryRunner.query(`DROP TABLE events`);
   }
 }

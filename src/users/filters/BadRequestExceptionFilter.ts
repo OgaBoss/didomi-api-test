@@ -19,6 +19,7 @@ export class BadRequestExceptionFilter<T extends BadRequestException>
       typeof response === 'string'
         ? { message: exceptionResponse }
         : (exceptionResponse as Record<string, unknown>);
+    console.log(error);
     response.status(422).json({
       ...error,
       statusCode: 422,

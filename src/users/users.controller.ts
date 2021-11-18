@@ -22,11 +22,13 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get()
+  @UseInterceptors(new GetResponseInterceptor())
   index(@Query() paginationQueryDto: PaginationQueryDto) {
     return this.userService.findAllUsers(paginationQueryDto);
   }
 
   @Get(':user_id')
+  @UseInterceptors(new GetResponseInterceptor())
   find(@Param('user_id') user_id: string) {
     return this.userService.findUser(user_id);
   }

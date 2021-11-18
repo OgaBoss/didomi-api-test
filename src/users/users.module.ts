@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { GetAllUsersHandler } from './queries/GetAllUsersHandler';
 import { GetUserHandler } from './queries/GetUserHandler';
 import { DeleteUserHandler } from './commands/DeleteUserHandler';
-import { EventSourcedCurrentState } from '../events/helpers/EventSourcedCurrentState';
+import { EventSourcedCurrentState } from '../helpers/EventSourcedCurrentState';
 import { Event } from '../events/models/Event';
 
 export const CommandHandlers = [CreateUserHandler, DeleteUserHandler];

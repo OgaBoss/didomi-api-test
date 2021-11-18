@@ -17,7 +17,7 @@ export class DeleteUserHandler implements ICommandHandler<DeleteUserCommand> {
 
     const response = await this.userRepository.softDelete(user_id);
 
-    if (!response.affected) {
+    if (response.affected === 0) {
       throw new NotFoundException(`User with id #${user_id} not found`);
     }
 

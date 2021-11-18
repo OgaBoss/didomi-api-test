@@ -5,7 +5,7 @@ import { Connection, QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/models/User';
 import { CreateEventDto } from '../dtos/CreateEventDto';
-import { EventSourcedCurrentState } from '../helpers/EventSourcedCurrentState';
+import { EventSourcedCurrentState } from '../../helpers/EventSourcedCurrentState';
 
 @CommandHandler(CreateEventCommand)
 export class CreateEventHandler implements ICommandHandler<CreateEventCommand> {

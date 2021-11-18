@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Event } from './models/Event';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
-import { EventSourcedCurrentState } from './helpers/EventSourcedCurrentState';
+import { EventSourcedCurrentState } from '../helpers/EventSourcedCurrentState';
 
 export const CommandHandlers = [CreateEventHandler];
 

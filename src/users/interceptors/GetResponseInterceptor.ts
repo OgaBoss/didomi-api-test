@@ -17,14 +17,9 @@ export class GetResponseInterceptor implements NestInterceptor {
           return {
             id: data.id,
             email: data.email,
+            consents: [],
           };
         }
-        return data.map((item) => {
-          return {
-            id: item.id,
-            email: item.email,
-          };
-        });
       }),
     );
   }

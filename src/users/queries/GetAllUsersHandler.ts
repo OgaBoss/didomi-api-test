@@ -3,7 +3,7 @@ import { GetAllUsersQuery } from './GetAllUsersQuery';
 import { Repository } from 'typeorm';
 import { User } from '../models/User';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventSourcedCurrentState } from '../../events/helpers/EventSourcedCurrentState';
+import { EventSourcedCurrentState } from '../../helpers/EventSourcedCurrentState';
 
 @QueryHandler(GetAllUsersQuery)
 export class GetAllUsersHandler implements IQueryHandler<GetAllUsersQuery> {
@@ -17,8 +17,8 @@ export class GetAllUsersHandler implements IQueryHandler<GetAllUsersQuery> {
     const { paginationQueryDto } = query;
 
     const users = await this.userRepository.find({
-      // skip: paginationQueryDto.offset,
-      // take: paginationQueryDto.limit,
+      skip: paginationQueryDto.offset,
+      take: paginationQueryDto.limit,
     });
 
     return await Promise.all(

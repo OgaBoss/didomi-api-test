@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConsentsDataInterface } from '../../common/dtos/ConsentsDataInterface';
-import { Event } from '../models/Event';
-import { EventTypes } from '../dtos/EventTypes';
+import { ConsentsDataInterface } from '../common/dtos/ConsentsDataInterface';
+import { Event } from '../events/models/Event';
+import { EventTypes } from '../events/dtos/EventTypes';
 
 export class EventSourcedCurrentState {
   constructor(

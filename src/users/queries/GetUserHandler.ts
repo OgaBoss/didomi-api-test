@@ -4,7 +4,7 @@ import { User } from '../models/User';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GetUserQuery } from './GetUserQuery';
 import { NotFoundException } from '@nestjs/common';
-import { EventSourcedCurrentState } from '../../events/helpers/EventSourcedCurrentState';
+import { EventSourcedCurrentState } from '../../helpers/EventSourcedCurrentState';
 
 @QueryHandler(GetUserQuery)
 export class GetUserHandler implements IQueryHandler<GetUserQuery> {

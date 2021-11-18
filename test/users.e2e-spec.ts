@@ -7,11 +7,10 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CreateUserDto } from '../src/users/dtos/CreateUserDto';
-import { AppModule } from '../src/app.module';
-import { Repository } from 'typeorm';
 import { UsersModule } from '../src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DbConfig } from '../src/db/db-config';
+import { Repository } from 'typeorm';
+import { User } from '../src/users/models/User';
 
 describe('[API Users] /users', () => {
   let app: INestApplication;
@@ -20,7 +19,22 @@ describe('[API Users] /users', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [UsersModule, TypeOrmModule.forRoot(DbConfig.dbOptions())],
+      imports: [
+        UsersModule,
+        TypeOrmModule.forRoot({
+          type: 'mysql',
+          host: '127.0.0.1',
+          port: 3306,
+          username: 'root',
+          password: null,
+          database: 'didomi_test',
+          entities: [User],
+          autoLoadEntities: true,
+          synchronize: true,
+        }),
+        TypeOrmModule.forFeature([User]),
+      ],
+      providers: [Repository],
     }).compile();
 
     app = moduleFixture.createNestApplication();

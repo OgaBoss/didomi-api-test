@@ -20,7 +20,7 @@ $ npm run start
 
 ## DB
 ```
-Databse used is postgres
+Databse used is mysql
 ```
 
 ## Test

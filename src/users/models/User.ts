@@ -20,10 +20,10 @@ export class User {
   @Column()
   email: string;
 
-  @CreateDateColumn({ default: () => 'NOW()' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn({ default: () => 'NOW()' })
+  @UpdateDateColumn()
   updated_at: Date;
 
   @DeleteDateColumn()

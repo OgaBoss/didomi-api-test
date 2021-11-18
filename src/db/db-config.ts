@@ -8,16 +8,12 @@ export class DbConfig {
       port: 3306,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      database:
+        process.env.NODE_ENV === 'development'
+          ? process.env.DB_DATABASE
+          : process.env.DB_DATABASE_TEST,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: process.env.NODE_ENV !== 'development',
     };
   }
 }
-
-// database:
-//   process.env.NODE_ENV === 'development'
-//     ? process.env.DB_DATABASE
-//     : process.env.DB_DATABASE_TEST,
-//     autoLoadEntities: true,
-//   synchronize: process.env.NODE_ENV !== 'development',

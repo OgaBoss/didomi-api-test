@@ -11,6 +11,8 @@ import { UsersModule } from '../src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../src/users/models/User';
+import { useContainer } from 'class-validator';
+import { Event } from '../src/events/models/Event';
 
 describe('[API Users] /users', () => {
   let app: INestApplication;
@@ -28,9 +30,11 @@ describe('[API Users] /users', () => {
           username: 'root',
           password: null,
           database: 'didomi_test',
-          entities: [User],
-          autoLoadEntities: true,
-          synchronize: true,
+          entities: [User, Event],
+          synchronize: false,
+          migrations: ['src/migrations/*.js'],
+          dropSchema: true,
+          migrationsRun: true,
         }),
         TypeOrmModule.forFeature([User]),
       ],
@@ -38,6 +42,7 @@ describe('[API Users] /users', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    useContainer(app, { fallbackOnErrors: true });
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,

@@ -9,20 +9,37 @@ import * as request from 'supertest';
 import { CreateUserDto } from '../src/users/dtos/CreateUserDto';
 import { UsersModule } from '../src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getRepository } from 'typeorm';
 import { User } from '../src/users/models/User';
 import { useContainer } from 'class-validator';
 import { Event } from '../src/events/models/Event';
+import { CreateEventDto } from '../src/events/dtos/CreateEventDto';
+import { EventTypes } from '../src/events/dtos/EventTypes';
+import { EventsModule } from '../src/events/events.module';
 
-describe('[API Users] /users', () => {
+describe('[Events Users] /events', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   const createUserDto: CreateUserDto = { email: 'test@test.com' };
+  const createEventsDto: CreateEventDto = {
+    user: {
+      id: '',
+    },
+    consents: [
+      {
+        id: EventTypes.SMS_NOTIFICATIONS,
+        enabled: false,
+      },
+      {
+        id: EventTypes.EMAIL_NOTIFICATIONS,
+        enabled: true,
+      },
+    ],
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        UsersModule,
+        EventsModule,
         TypeOrmModule.forRoot({
           type: 'mysql',
           host: '127.0.0.1',
@@ -55,48 +72,19 @@ describe('[API Users] /users', () => {
     httpServer = app.getHttpServer();
   });
 
-  it('create user [POST /users]', () => {
-    return request(httpServer)
+  it('create new events [POST /events]', async () => {
+    const { body } = await request(httpServer)
       .post('/users')
-      .send(createUserDto)
+      .send(createUserDto);
+
+    createEventsDto.user.id = body.id;
+    return request(httpServer)
+      .post('/events')
+      .send(createEventsDto)
       .expect(HttpStatus.CREATED)
       .then(({ body }) => {
         expect(body.email).toBe('test@test.com');
-        expect(body.consents.length).toBe(0);
-      });
-  });
-
-  it('should get user [GET /users/:id]', async () => {
-    const user = await getRepository(User).find();
-
-    return request(httpServer)
-      .get(`/users/${user[0].id}`)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body.email).toBe('test@test.com');
-        expect(body.consents.length).toBe(0);
-      });
-  });
-
-  it('should get all users [GET /users]', async () => {
-    return request(httpServer)
-      .get(`/users`)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(Array.isArray(body)).toBeTruthy();
-      });
-  });
-
-  it('should delete a user [DELETE /users/:id]', async () => {
-    const user = await getRepository(User).find();
-
-    return request(httpServer)
-      .delete(`/users/${user[0].id}`)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body.message).toBe(
-          `User with id #${user[0].id} successfully removed`,
-        );
+        expect(body.consents.length).toBe(2);
       });
   });
 

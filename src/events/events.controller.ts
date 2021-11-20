@@ -10,7 +10,6 @@ export class EventsController {
 
   @Post()
   store(@Body() createEventDto: CreateEventDto) {
-    console.log(createEventDto);
     return this.eventService.createEvents(createEventDto);
   }
 }
